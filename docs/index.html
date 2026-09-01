@@ -169,6 +169,7 @@
   .confidence-high { background: var(--sage-bg); color: var(--sage); }
   .confidence-medium { background: var(--ochre-bg); color: var(--ochre); }
   .confidence-low { background: var(--clay-bg); color: var(--clay); }
+  .confidence-no-model { background: var(--border); color: var(--ink-soft); }
 
   .prob-badge {
     width: 84px;
@@ -292,8 +293,9 @@ async function loadPredictions() {
 }
 
 function renderGame(game) {
+  const noModel = game.confidence === 'no model';
   const pct = Math.round(game.nrfi_probability * 100);
-  const confClass = 'confidence-' + game.confidence;
+  const confClass = 'confidence-' + game.confidence.replace(' ', '-');
 
   return `
     <div class="game-card">
@@ -303,11 +305,11 @@ function renderGame(game) {
         </div>
         <div class="card-meta">
           <span class="tier-pill">${game.tier === 'confirmed' ? 'Confirmed lineups' : 'Projected lineups'}</span>
-          <span class="confidence-pill ${confClass}">${game.confidence} confidence</span>
+          <span class="confidence-pill ${confClass}">${noModel ? 'no model yet' : game.confidence + ' confidence'}</span>
         </div>
       </div>
       <div class="prob-badge">
-        <div class="num">${pct}%</div>
+        <div class="num">${noModel ? 'n/a' : pct + '%'}</div>
         <div class="label">NRFI</div>
       </div>
     </div>
