@@ -15,6 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import mlb_api  # noqa: E402
 import pipeline  # noqa: E402
+import cache  # noqa: E402
 from model import train_model, predict  # noqa: E402
 
 
@@ -29,20 +30,37 @@ def daterange(start_date: str, end_date: str):
 
 def _get_pitcher_hand(player_id: int) -> str:
     """Returns 'vl' if pitcher throws left, 'vr' otherwise (this is the
-    hand code the opposing batters' splits should use)."""
-    data = mlb_api._get(f"{mlb_api.BASE_V1}/people/{player_id}")
-    people = data.get("people", [])
-    if not people:
-        return "vr"
-    throws = people[0].get("pitchHand", {}).get("code", "R")
-    return "vl" if throws == "L" else "vr"
+    hand code the opposing batters' splits should use). Throwing hand
+    never changes, so this is cached permanently (as_of_date='static')
+    instead of being re-fetched from the API on every call."""
+
+    def _compute():
+        data = mlb_api._get(f"{mlb_api.BASE_V1}/people/{player_id}")
+        people = data.get("people", [])
+        if not people:
+            return "vr"
+        throws = people[0].get("pitchHand", {}).get("code", "R")
+        return "vl" if throws == "L" else "vr"
+
+    return cache.get_or_compute("pitcher_hand", str(player_id), "static", _compute)
+
+
+_schedule_cache_by_date = {}
+
+
+def _get_schedule_cached(date: str) -> list[dict]:
+    """In-memory cache for the current process, avoids re-fetching the same
+    date's schedule repeatedly when many teams' lookback windows overlap."""
+    if date not in _schedule_cache_by_date:
+        _schedule_cache_by_date[date] = mlb_api.get_schedule(date)
+    return _schedule_cache_by_date[date]
 
 
 def _find_last_completed_game(team_id: int, before_date: str) -> int | None:
     end = datetime.strptime(before_date, "%Y-%m-%d")
     for days_back in range(1, 15):
         check_date = (end - timedelta(days=days_back)).strftime("%Y-%m-%d")
-        games = mlb_api.get_schedule(check_date)
+        games = _get_schedule_cached(check_date)
         for g in games:
             if g["teams"]["home"]["team"]["id"] == team_id or g["teams"]["away"]["team"]["id"] == team_id:
                 if g.get("status", {}).get("abstractGameState") == "Final":
