@@ -85,7 +85,10 @@ def predict_today(output_path: str = "docs/predictions.json") -> list[dict]:
         prob = predict(model, [features])[0]
 
         stale = max(features["home_lineup_stale_fraction"], features["away_lineup_stale_fraction"])
-        confidence = "low" if stale > 0.3 else ("medium" if stale > 0 else "high")
+        if model is None:
+            confidence = "no model"
+        else:
+            confidence = "low" if stale > 0.3 else ("medium" if stale > 0 else "high")
 
         results.append({
             "game_pk": game_pk,
