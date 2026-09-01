@@ -5,158 +5,245 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NRFI Board</title>
 <style>
+  @font-face {
+    font-family: 'Georgia';
+  }
+
   :root {
-    --field-green: #1b3a2f;
-    --field-green-dark: #12271f;
-    --dirt: #a9714f;
-    --chalk: #f2ede1;
-    --ink: #16201c;
-    --high-conf: #3f7d5c;
-    --med-conf: #b98a2e;
-    --low-conf: #a84b3f;
+    --paper: #FAF6ED;
+    --paper-card: #FFFFFF;
+    --ink: #1A1613;
+    --ink-soft: rgba(26,22,19,0.58);
+    --border: #E8DFC8;
+    --gold: #C9932E;
+    --gold-soft: rgba(201,147,46,0.14);
+    --sage: #5E7F63;
+    --sage-bg: rgba(94,127,99,0.14);
+    --ochre: #B98A3D;
+    --ochre-bg: rgba(185,138,61,0.16);
+    --clay: #B5604A;
+    --clay-bg: rgba(181,96,74,0.14);
+    --shadow: 0 1px 2px rgba(26,22,19,0.04), 0 8px 24px rgba(26,22,19,0.06);
+  }
+
+  html[data-theme="dark"] {
+    --paper: #14141C;
+    --paper-card: #1D1D28;
+    --ink: #EDEAE0;
+    --ink-soft: rgba(237,234,224,0.56);
+    --border: #2E2E3C;
+    --gold: #E0AC4C;
+    --gold-soft: rgba(224,172,76,0.14);
+    --sage: #7FA986;
+    --sage-bg: rgba(127,169,134,0.16);
+    --ochre: #D9A85C;
+    --ochre-bg: rgba(217,168,92,0.16);
+    --clay: #D07E67;
+    --clay-bg: rgba(208,126,103,0.16);
+    --shadow: none;
   }
 
   * { box-sizing: border-box; }
 
   body {
     margin: 0;
-    background: var(--field-green-dark);
-    background-image:
-      repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 80px);
-    color: var(--chalk);
-    font-family: 'Georgia', 'Iowan Old Style', serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     min-height: 100vh;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
+
+  .display {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   }
 
   header {
-    padding: 3rem 1.5rem 2rem;
-    text-align: center;
-    border-bottom: 3px solid var(--dirt);
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2.75rem 1.5rem 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
   }
 
-  header h1 {
-    font-family: 'Georgia', serif;
-    font-size: clamp(2rem, 6vw, 3.2rem);
+  .title-block h1 {
+    font-size: clamp(1.9rem, 6vw, 2.5rem);
     margin: 0;
-    letter-spacing: 0.02em;
-    font-weight: normal;
+    font-weight: 500;
+    letter-spacing: -0.01em;
   }
 
-  header p {
-    margin: 0.6rem 0 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 0.95rem;
-    color: rgba(242,237,225,0.65);
+  .title-block p {
+    margin: 0.4rem 0 0;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .theme-toggle button {
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .theme-toggle button.active {
+    background: var(--gold-soft);
+    color: var(--gold);
   }
 
   main {
-    max-width: 900px;
+    max-width: 720px;
     margin: 0 auto;
-    padding: 2rem 1.25rem 4rem;
+    padding: 0.5rem 1.5rem 4rem;
   }
 
   .game-card {
-    background: var(--field-green);
-    border: 1px solid rgba(242,237,225,0.15);
-    border-radius: 4px;
-    padding: 1.5rem;
-    margin-bottom: 1.25rem;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 1.35rem 1.5rem;
+    margin-bottom: 1rem;
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 1rem;
     align-items: center;
   }
 
-  .matchup {
-    font-size: 1.3rem;
-    line-height: 1.4;
+  .matchup-teams {
+    font-size: 1.15rem;
+    line-height: 1.5;
   }
 
-  .matchup .vs {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 0.8rem;
-    color: rgba(242,237,225,0.5);
-    display: block;
-    margin: 0.15rem 0;
+  .matchup-teams .at {
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    text-transform: lowercase;
+    margin: 0 0.35rem;
   }
 
-  .meta {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 0.8rem;
-    color: rgba(242,237,225,0.55);
-    margin-top: 0.5rem;
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.55rem;
   }
 
-  .score-block {
-    text-align: right;
-    min-width: 140px;
+  .tier-pill {
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
   }
 
-  .prob {
-    font-size: 2.4rem;
-    font-weight: bold;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  .confidence-pill {
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+  }
+
+  .confidence-high { background: var(--sage-bg); color: var(--sage); }
+  .confidence-medium { background: var(--ochre-bg); color: var(--ochre); }
+  .confidence-low { background: var(--clay-bg); color: var(--clay); }
+
+  .prob-badge {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: var(--gold-soft);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .prob-badge .num {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+    font-size: 1.65rem;
+    font-weight: 600;
+    color: var(--gold);
     line-height: 1;
   }
 
-  .prob-label {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 0.7rem;
-    color: rgba(242,237,225,0.55);
-    margin-top: 0.25rem;
-  }
-
-  .confidence-tag {
-    display: inline-block;
-    margin-top: 0.6rem;
-    padding: 0.2rem 0.6rem;
-    border-radius: 3px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 0.7rem;
-    font-weight: 600;
-  }
-
-  .confidence-high { background: var(--high-conf); }
-  .confidence-medium { background: var(--med-conf); }
-  .confidence-low { background: var(--low-conf); }
-
-  .tier-tag {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 0.7rem;
-    color: rgba(242,237,225,0.5);
-    margin-top: 0.3rem;
+  .prob-badge .label {
+    font-size: 0.6rem;
+    color: var(--gold);
+    opacity: 0.75;
+    margin-top: 0.15rem;
+    letter-spacing: 0.02em;
   }
 
   .empty-state {
     text-align: center;
-    padding: 4rem 1rem;
-    color: rgba(242,237,225,0.5);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 4rem 1.5rem;
+    color: var(--ink-soft);
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+  }
+
+  .empty-state p {
+    margin: 0;
+    font-size: 0.95rem;
   }
 
   footer {
-    text-align: center;
-    padding: 1.5rem;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 0.75rem;
-    color: rgba(242,237,225,0.4);
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 1.5rem 2rem;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
   }
 
   @media (max-width: 520px) {
-    .game-card { grid-template-columns: 1fr; text-align: left; }
-    .score-block { text-align: left; }
+    .game-card { grid-template-columns: 1fr auto; padding: 1.15rem; }
+    .matchup-teams { font-size: 1.02rem; }
+    .prob-badge { width: 68px; height: 68px; }
+    .prob-badge .num { font-size: 1.3rem; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>NRFI Board</h1>
-  <p id="generated-at">Loading today's games…</p>
+  <div class="title-block">
+    <h1 class="display">NRFI Board</h1>
+    <p id="generated-at">Loading today's games…</p>
+  </div>
+  <div class="theme-toggle" id="theme-toggle">
+    <button id="btn-light" aria-label="Light mode">☀</button>
+    <button id="btn-dark" aria-label="Dark mode">☾</button>
+  </div>
 </header>
 
 <main id="games-container">
-  <div class="empty-state">Fetching predictions…</div>
+  <div class="empty-state"><p>Fetching predictions…</p></div>
 </main>
 
 <footer>
@@ -164,6 +251,20 @@
 </footer>
 
 <script>
+function setTheme(mode) {
+  document.documentElement.setAttribute('data-theme', mode);
+  localStorage.setItem('nrfi-theme', mode);
+  document.getElementById('btn-light').classList.toggle('active', mode === 'light');
+  document.getElementById('btn-dark').classList.toggle('active', mode === 'dark');
+}
+
+const savedTheme = localStorage.getItem('nrfi-theme')
+  || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+setTheme(savedTheme);
+
+document.getElementById('btn-light').addEventListener('click', () => setTheme('light'));
+document.getElementById('btn-dark').addEventListener('click', () => setTheme('dark'));
+
 async function loadPredictions() {
   const container = document.getElementById('games-container');
   const genLabel = document.getElementById('generated-at');
@@ -179,13 +280,13 @@ async function loadPredictions() {
     });
 
     if (!data.games || data.games.length === 0) {
-      container.innerHTML = '<div class="empty-state">No games scheduled today.</div>';
+      container.innerHTML = '<div class="empty-state"><p>No games scheduled today.</p></div>';
       return;
     }
 
     container.innerHTML = data.games.map(renderGame).join('');
   } catch (err) {
-    container.innerHTML = '<div class="empty-state">Predictions haven\'t run yet today. Check back soon.</div>';
+    container.innerHTML = '<div class="empty-state"><p>Predictions haven\'t run yet today.</p></div>';
     genLabel.textContent = '';
   }
 }
@@ -197,17 +298,17 @@ function renderGame(game) {
   return `
     <div class="game-card">
       <div>
-        <div class="matchup">
-          ${escapeHtml(game.away_team)}
-          <span class="vs">at</span>
-          ${escapeHtml(game.home_team)}
+        <div class="matchup-teams">
+          ${escapeHtml(game.away_team)}<span class="at">at</span>${escapeHtml(game.home_team)}
         </div>
-        <div class="tier-tag">${game.tier === 'confirmed' ? 'Confirmed lineups' : 'Projected lineups'}</div>
+        <div class="card-meta">
+          <span class="tier-pill">${game.tier === 'confirmed' ? 'Confirmed lineups' : 'Projected lineups'}</span>
+          <span class="confidence-pill ${confClass}">${game.confidence} confidence</span>
+        </div>
       </div>
-      <div class="score-block">
-        <div class="prob">${pct}%</div>
-        <div class="prob-label">NRFI</div>
-        <div class="confidence-tag ${confClass}">${game.confidence} confidence</div>
+      <div class="prob-badge">
+        <div class="num">${pct}%</div>
+        <div class="label">NRFI</div>
       </div>
     </div>
   `;
