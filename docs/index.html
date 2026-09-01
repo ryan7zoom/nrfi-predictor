@@ -1,1 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NRFI Board</title>
+<style>
+  :root {
+    --field-green: #1b3a2f;
+    --field-green-dark: #12271f;
+    --dirt: #a9714f;
+    --chalk: #f2ede1;
+    --ink: #16201c;
+    --high-conf: #3f7d5c;
+    --med-conf: #b98a2e;
+    --low-conf: #a84b3f;
+  }
 
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--field-green-dark);
+    background-image:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 80px);
+    color: var(--chalk);
+    font-family: 'Georgia', 'Iowan Old Style', serif;
+    min-height: 100vh;
+  }
+
+  header {
+    padding: 3rem 1.5rem 2rem;
+    text-align: center;
+    border-bottom: 3px solid var(--dirt);
+  }
+
+  header h1 {
+    font-family: 'Georgia', serif;
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    margin: 0;
+    letter-spacing: 0.02em;
+    font-weight: normal;
+  }
+
+  header p {
+    margin: 0.6rem 0 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.95rem;
+    color: rgba(242,237,225,0.65);
+  }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+  }
+
+  .game-card {
+    background: var(--field-green);
+    border: 1px solid rgba(242,237,225,0.15);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .matchup {
+    font-size: 1.3rem;
+    line-height: 1.4;
+  }
+
+  .matchup .vs {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.8rem;
+    color: rgba(242,237,225,0.5);
+    display: block;
+    margin: 0.15rem 0;
+  }
+
+  .meta {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.8rem;
+    color: rgba(242,237,225,0.55);
+    margin-top: 0.5rem;
+  }
+
+  .score-block {
+    text-align: right;
+    min-width: 140px;
+  }
+
+  .prob {
+    font-size: 2.4rem;
+    font-weight: bold;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1;
+  }
+
+  .prob-label {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.7rem;
+    color: rgba(242,237,225,0.55);
+    margin-top: 0.25rem;
+  }
+
+  .confidence-tag {
+    display: inline-block;
+    margin-top: 0.6rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+
+  .confidence-high { background: var(--high-conf); }
+  .confidence-medium { background: var(--med-conf); }
+  .confidence-low { background: var(--low-conf); }
+
+  .tier-tag {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.7rem;
+    color: rgba(242,237,225,0.5);
+    margin-top: 0.3rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: rgba(242,237,225,0.5);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(242,237,225,0.4);
+  }
+
+  @media (max-width: 520px) {
+    .game-card { grid-template-columns: 1fr; text-align: left; }
+    .score-block { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>NRFI Board</h1>
+  <p id="generated-at">Loading today's games…</p>
+</header>
+
+<main id="games-container">
+  <div class="empty-state">Fetching predictions…</div>
+</main>
+
+<footer>
+  Predicts the probability neither team scores in the 1st inning.
+</footer>
+
+<script>
+async function loadPredictions() {
+  const container = document.getElementById('games-container');
+  const genLabel = document.getElementById('generated-at');
+
+  try {
+    const res = await fetch('predictions.json?_=' + Date.now());
+    if (!res.ok) throw new Error('No predictions file yet');
+    const data = await res.json();
+
+    const generated = new Date(data.generated_at);
+    genLabel.textContent = 'Updated ' + generated.toLocaleString(undefined, {
+      month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+    });
+
+    if (!data.games || data.games.length === 0) {
+      container.innerHTML = '<div class="empty-state">No games scheduled today.</div>';
+      return;
+    }
+
+    container.innerHTML = data.games.map(renderGame).join('');
+  } catch (err) {
+    container.innerHTML = '<div class="empty-state">Predictions haven\'t run yet today. Check back soon.</div>';
+    genLabel.textContent = '';
+  }
+}
+
+function renderGame(game) {
+  const pct = Math.round(game.nrfi_probability * 100);
+  const confClass = 'confidence-' + game.confidence;
+
+  return `
+    <div class="game-card">
+      <div>
+        <div class="matchup">
+          ${escapeHtml(game.away_team)}
+          <span class="vs">at</span>
+          ${escapeHtml(game.home_team)}
+        </div>
+        <div class="tier-tag">${game.tier === 'confirmed' ? 'Confirmed lineups' : 'Projected lineups'}</div>
+      </div>
+      <div class="score-block">
+        <div class="prob">${pct}%</div>
+        <div class="prob-label">NRFI</div>
+        <div class="confidence-tag ${confClass}">${game.confidence} confidence</div>
+      </div>
+    </div>
+  `;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+loadPredictions();
+</script>
+
+</body>
+</html>
