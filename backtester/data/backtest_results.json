@@ -1,0 +1,656 @@
+[
+  {
+    "game_pk": 824940,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824860,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824536,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823483,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 822835,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823889,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823078,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823806,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824211,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824698,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 825106,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823321,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823157,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824136,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823970,
+    "date": "2026-04-01",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824133,
+    "date": "2026-04-02",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 825105,
+    "date": "2026-04-02",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823242,
+    "date": "2026-04-02",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824621,
+    "date": "2026-04-02",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 822758,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824299,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823568,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824786,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824621,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 822919,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824458,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823732,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824377,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823406,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824056,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 825026,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 825103,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823240,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824134,
+    "date": "2026-04-03",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824295,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824622,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824132,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824134,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 822757,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 825027,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823404,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824782,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 822920,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823569,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823730,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 825104,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824378,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823239,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824054,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824460,
+    "date": "2026-04-04",
+    "predicted_nrfi_prob": 0.5,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824459,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824460,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 822756,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823405,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824781,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823566,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823729,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824620,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824131,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 822917,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824379,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 825025,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823238,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824053,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 825102,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824296,
+    "date": "2026-04-05",
+    "predicted_nrfi_prob": 0.4803149700164795,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823002,
+    "date": "2026-04-06",
+    "predicted_nrfi_prob": 0.6018406748771667,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824456,
+    "date": "2026-04-06",
+    "predicted_nrfi_prob": 0.4477190375328064,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823401,
+    "date": "2026-04-06",
+    "predicted_nrfi_prob": 0.5821179747581482,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823886,
+    "date": "2026-04-06",
+    "predicted_nrfi_prob": 0.6018406748771667,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 822755,
+    "date": "2026-04-06",
+    "predicted_nrfi_prob": 0.5821179747581482,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824783,
+    "date": "2026-04-06",
+    "predicted_nrfi_prob": 0.5743982195854187,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 822832,
+    "date": "2026-04-06",
+    "predicted_nrfi_prob": 0.3298090696334839,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823728,
+    "date": "2026-04-06",
+    "predicted_nrfi_prob": 0.3298090696334839,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824619,
+    "date": "2026-04-06",
+    "predicted_nrfi_prob": 0.3833632171154022,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 822918,
+    "date": "2026-04-06",
+    "predicted_nrfi_prob": 0.40284356474876404,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824376,
+    "date": "2026-04-06",
+    "predicted_nrfi_prob": 0.5820892453193665,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824052,
+    "date": "2026-04-06",
+    "predicted_nrfi_prob": 0.46798768639564514,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823237,
+    "date": "2026-04-06",
+    "predicted_nrfi_prob": 0.4477190375328064,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824457,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.5437146425247192,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824618,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.31111955642700195,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823648,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.6349976062774658,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823402,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.5060295462608337,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 822999,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.4396463930606842,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823887,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.6805609464645386,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 822754,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.582261323928833,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824780,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.5132147073745728,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823567,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.43034958839416504,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 822831,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.48531147837638855,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 823727,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.434209406375885,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 822916,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.5169943571090698,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824375,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.6048493385314941,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824051,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.6838418245315552,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823235,
+    "date": "2026-04-07",
+    "predicted_nrfi_prob": 0.49476441740989685,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823403,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.7224887609481812,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824455,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.8577524423599243,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 824779,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.6888709664344788,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824617,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.5799257159233093,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 822915,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.3128764033317566,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 822833,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.5916210412979126,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824374,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.1903107762336731,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823234,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.2707236111164093,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 822753,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.48637259006500244,
+    "actual_label": 1
+  },
+  {
+    "game_pk": 824050,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.7224887609481812,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823646,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.7480615377426147,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823000,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.6403728723526001,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823885,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.46145695447921753,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823564,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.44104552268981934,
+    "actual_label": 0
+  },
+  {
+    "game_pk": 823726,
+    "date": "2026-04-08",
+    "predicted_nrfi_prob": 0.23837129771709442,
+    "actual_label": 0
+  }
+]
