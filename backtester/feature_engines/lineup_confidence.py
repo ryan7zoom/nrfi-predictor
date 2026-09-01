@@ -25,6 +25,8 @@ def compute_lineup_freshness(player_ids: list[int], team_id: int, as_of_date: st
     }
 
 
-def compute_sample_weight(num_starts: int, target_starts: int = 8) -> float:
-    """Ramps 0 to 1.0 as starts accumulate, caps at 1.0."""
-    return min(1.0, num_starts / target_starts)
+def compute_sample_weight(num_starts: int, target_starts: int = 8, min_weight: float = 0.1) -> float:
+    """Ramps from min_weight to 1.0 as starts accumulate, caps at 1.0.
+    min_weight keeps early-season games (0 starts) from having zero weight,
+    which would otherwise make the whole training batch unusable."""
+    return max(min_weight, min(1.0, num_starts / target_starts))
