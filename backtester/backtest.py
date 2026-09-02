@@ -120,9 +120,19 @@ def build_features_for_date(eval_date: str, lineup_mode: str = "realistic") -> l
     return results
 
 
-def run_backtest(start_date: str, end_date: str, lineup_mode: str = "realistic", output_path: str = None) -> list[dict]:
+def run_backtest(start_date: str, end_date: str, lineup_mode: str = "realistic", output_path: str = None, retrain_every_n_days: int = 7) -> list[dict]:
+    """
+    retrain_every_n_days: how often to retrain the model during the walk.
+    Retraining on every single day was the main reason a 5-month backtest
+    took 6+ hours (each retrain gets more expensive as history grows).
+    Retraining weekly instead is still a realistic walk-forward test (a
+    real production system wouldn't retrain daily either) and is roughly
+    7x fewer training runs.
+    """
     all_features = []
     all_predictions = []
+    model = None
+    days_since_retrain = 0
 
     for eval_date in daterange(start_date, end_date):
         todays_features = build_features_for_date(eval_date, lineup_mode=lineup_mode)
@@ -130,10 +140,14 @@ def run_backtest(start_date: str, end_date: str, lineup_mode: str = "realistic",
             continue
 
         if len(all_features) >= 50:
-            model = train_model(all_features)
+            if model is None or days_since_retrain >= retrain_every_n_days:
+                model = train_model(all_features)
+                days_since_retrain = 0
             preds = predict(model, todays_features)
         else:
             preds = [0.5] * len(todays_features)
+
+        days_since_retrain += 1
 
         for feat, pred in zip(todays_features, preds):
             all_predictions.append({
@@ -160,7 +174,8 @@ if __name__ == "__main__":
     parser.add_argument("--end", required=True)
     parser.add_argument("--lineup-mode", default="realistic", choices=["realistic", "perfect"])
     parser.add_argument("--output", default="backtester/data/backtest_results.json")
+    parser.add_argument("--retrain-every", type=int, default=7, help="Retrain the model every N days (default 7)")
     args = parser.parse_args()
 
-    results = run_backtest(args.start, args.end, args.lineup_mode, args.output)
+    results = run_backtest(args.start, args.end, args.lineup_mode, args.output, args.retrain_every)
     print(f"Backtest complete: {len(results)} predictions written to {args.output}")
