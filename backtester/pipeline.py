@@ -20,30 +20,44 @@ def _season_from_date(date_str: str) -> int:
 
 
 def get_pitcher_features(player_id: int, as_of_date: str) -> dict:
+    """
+    The raw game log for a player-season doesn't change day to day, so it's
+    cached once (key scope 'static'), not once per as_of_date. Before this
+    fix, the same pitcher's full season log was re-fetched from the API
+    every single day they appeared in a backtest, which was the main
+    reason a 5-month backtest took 5+ hours.
+    """
     season = _season_from_date(as_of_date)
 
-    def _compute():
-        splits = mlb_api.get_pitcher_game_log(player_id, season)
-        return compute_pitcher_quality_features(splits, as_of_date)
+    def _fetch_raw():
+        return mlb_api.get_pitcher_game_log(player_id, season)
 
-    return cache.get_or_compute("pitcher_quality", f"{player_id}_{season}", as_of_date, _compute)
+    raw_splits = cache.get_or_compute("pitcher_raw_log", f"{player_id}_{season}", "static", _fetch_raw)
+    return compute_pitcher_quality_features(raw_splits, as_of_date)
 
 
 def get_offense_features(team_id: int, top3_batter_ids: list[int], vs_hand: str, as_of_date: str) -> dict:
+    """
+    Same fix as get_pitcher_features: a batter's split stats for a season
+    don't change day to day at the granularity this model needs, so cache
+    each batter's raw split once per (player, season, hand), not per day.
+    """
     season = _season_from_date(as_of_date)
 
-    def _compute():
-        splits = []
-        for pid in top3_batter_ids:
-            try:
-                s = mlb_api.get_batter_hitting_splits(pid, season, vs_hand)
-            except RuntimeError:
-                s = None
-            splits.append(s)
-        return compute_top3_offense_feature(splits)
+    splits = []
+    for pid in top3_batter_ids:
+        key = f"{pid}_{season}_{vs_hand}"
 
-    key = f"{team_id}_{'_'.join(map(str, top3_batter_ids))}_{vs_hand}_{season}"
-    return cache.get_or_compute("offense_strength", key, as_of_date, _compute)
+        def _fetch_raw(pid=pid):
+            try:
+                return mlb_api.get_batter_hitting_splits(pid, season, vs_hand)
+            except RuntimeError:
+                return None
+
+        s = cache.get_or_compute("batter_raw_split", key, "static", _fetch_raw)
+        splits.append(s)
+
+    return compute_top3_offense_feature(splits)
 
 
 def get_projected_lineup(team_id: int, last_completed_game_pk: int, home_or_away: str) -> list[int]:
@@ -54,7 +68,9 @@ def get_weather_features(home_team_id: int, as_of_date: str, is_historical: bool
     """is_historical=True uses the archive API (backtest-safe).
     If the weather API fails after retries (timeouts do happen over a
     5-month backtest), fall back to unknown weather for that one game
-    instead of crashing the whole run."""
+    instead of crashing the whole run. Weather genuinely does vary by day,
+    so this one correctly stays keyed by as_of_date, unlike pitcher/batter
+    stats above."""
     info = get_park_info(home_team_id)
 
     def _compute():

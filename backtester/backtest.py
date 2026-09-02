@@ -10,6 +10,7 @@ import sys
 import os
 import json
 from datetime import datetime, timedelta
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -17,6 +18,9 @@ import mlb_api  # noqa: E402
 import pipeline  # noqa: E402
 import cache  # noqa: E402
 from model import train_model, predict  # noqa: E402
+
+MAX_WORKERS = 10  # games processed concurrently per day; keeps network I/O
+                   # from being fully sequential without hammering the API
 
 
 def daterange(start_date: str, end_date: str):
@@ -68,54 +72,74 @@ def _find_last_completed_game(team_id: int, before_date: str) -> int | None:
     return None
 
 
+def _process_one_game(g: dict, eval_date: str, lineup_mode: str) -> dict | None:
+    """Builds the feature dict for a single game. Returns None if the game
+    is skipped (no probable pitchers yet) or fails for any reason."""
+    try:
+        game_pk = g["gamePk"]
+        home_team_id = g["teams"]["home"]["team"]["id"]
+        away_team_id = g["teams"]["away"]["team"]["id"]
+
+        home_pitcher = g["teams"]["home"].get("probablePitcher")
+        away_pitcher = g["teams"]["away"].get("probablePitcher")
+        if not home_pitcher or not away_pitcher:
+            return None
+
+        home_pitcher_id = home_pitcher["id"]
+        away_pitcher_id = away_pitcher["id"]
+        home_pitcher_hand = _get_pitcher_hand(home_pitcher_id)
+        away_pitcher_hand = _get_pitcher_hand(away_pitcher_id)
+
+        if lineup_mode == "perfect":
+            home_top3 = mlb_api.get_starting_batting_order(game_pk, "home")[:3]
+            away_top3 = mlb_api.get_starting_batting_order(game_pk, "away")[:3]
+        else:
+            home_last_game = _find_last_completed_game(home_team_id, eval_date)
+            away_last_game = _find_last_completed_game(away_team_id, eval_date)
+            home_top3 = mlb_api.get_starting_batting_order(home_last_game, "home")[:3] if home_last_game else []
+            away_top3 = mlb_api.get_starting_batting_order(away_last_game, "away")[:3] if away_last_game else []
+
+        features = pipeline.build_game_features(
+            game_pk=game_pk, home_team_id=home_team_id, away_team_id=away_team_id,
+            home_pitcher_id=home_pitcher_id, away_pitcher_id=away_pitcher_id,
+            home_pitcher_hand=home_pitcher_hand, away_pitcher_hand=away_pitcher_hand,
+            home_top3_batter_ids=home_top3, away_top3_batter_ids=away_top3,
+            as_of_date=eval_date, is_historical=True,
+        )
+
+        if g.get("status", {}).get("abstractGameState") == "Final":
+            runs = mlb_api.get_first_inning_runs(game_pk)
+            features["nrfi_label"] = 1 if (runs["home"] == 0 and runs["away"] == 0) else 0
+
+        return features
+
+    except Exception as exc:
+        # One bad game (API hiccup, missing data, etc.) should not take
+        # down a multi-month backtest. Skip it, log it, keep going.
+        print(f"Skipping game on {eval_date} due to error: {exc}")
+        return None
+
+
 def build_features_for_date(eval_date: str, lineup_mode: str = "realistic") -> list[dict]:
+    """
+    Games on the same date are independent of each other, so they're
+    processed concurrently (each one makes several slow network calls,
+    and running them one at a time was the biggest reason a 5-month
+    backtest took 5+ hours). The date-to-date order outside this function
+    stays sequential, since that's what makes it a real walk-forward
+    backtest and not just a shuffled bag of games.
+    """
     games = mlb_api.get_schedule(eval_date)
+    if not games:
+        return []
+
     results = []
-
-    for g in games:
-        try:
-            game_pk = g["gamePk"]
-            home_team_id = g["teams"]["home"]["team"]["id"]
-            away_team_id = g["teams"]["away"]["team"]["id"]
-
-            home_pitcher = g["teams"]["home"].get("probablePitcher")
-            away_pitcher = g["teams"]["away"].get("probablePitcher")
-            if not home_pitcher or not away_pitcher:
-                continue
-
-            home_pitcher_id = home_pitcher["id"]
-            away_pitcher_id = away_pitcher["id"]
-            home_pitcher_hand = _get_pitcher_hand(home_pitcher_id)
-            away_pitcher_hand = _get_pitcher_hand(away_pitcher_id)
-
-            if lineup_mode == "perfect":
-                home_top3 = mlb_api.get_starting_batting_order(game_pk, "home")[:3]
-                away_top3 = mlb_api.get_starting_batting_order(game_pk, "away")[:3]
-            else:
-                home_last_game = _find_last_completed_game(home_team_id, eval_date)
-                away_last_game = _find_last_completed_game(away_team_id, eval_date)
-                home_top3 = mlb_api.get_starting_batting_order(home_last_game, "home")[:3] if home_last_game else []
-                away_top3 = mlb_api.get_starting_batting_order(away_last_game, "away")[:3] if away_last_game else []
-
-            features = pipeline.build_game_features(
-                game_pk=game_pk, home_team_id=home_team_id, away_team_id=away_team_id,
-                home_pitcher_id=home_pitcher_id, away_pitcher_id=away_pitcher_id,
-                home_pitcher_hand=home_pitcher_hand, away_pitcher_hand=away_pitcher_hand,
-                home_top3_batter_ids=home_top3, away_top3_batter_ids=away_top3,
-                as_of_date=eval_date, is_historical=True,
-            )
-
-            if g.get("status", {}).get("abstractGameState") == "Final":
-                runs = mlb_api.get_first_inning_runs(game_pk)
-                features["nrfi_label"] = 1 if (runs["home"] == 0 and runs["away"] == 0) else 0
-
-            results.append(features)
-
-        except Exception as exc:
-            # One bad game (API hiccup, missing data, etc.) should not take
-            # down a multi-month backtest. Skip it, log it, keep going.
-            print(f"Skipping game on {eval_date} due to error: {exc}")
-            continue
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = [executor.submit(_process_one_game, g, eval_date, lineup_mode) for g in games]
+        for future in as_completed(futures):
+            feat = future.result()
+            if feat is not None:
+                results.append(feat)
 
     return results
 
