@@ -73,42 +73,49 @@ def build_features_for_date(eval_date: str, lineup_mode: str = "realistic") -> l
     results = []
 
     for g in games:
-        game_pk = g["gamePk"]
-        home_team_id = g["teams"]["home"]["team"]["id"]
-        away_team_id = g["teams"]["away"]["team"]["id"]
+        try:
+            game_pk = g["gamePk"]
+            home_team_id = g["teams"]["home"]["team"]["id"]
+            away_team_id = g["teams"]["away"]["team"]["id"]
 
-        home_pitcher = g["teams"]["home"].get("probablePitcher")
-        away_pitcher = g["teams"]["away"].get("probablePitcher")
-        if not home_pitcher or not away_pitcher:
+            home_pitcher = g["teams"]["home"].get("probablePitcher")
+            away_pitcher = g["teams"]["away"].get("probablePitcher")
+            if not home_pitcher or not away_pitcher:
+                continue
+
+            home_pitcher_id = home_pitcher["id"]
+            away_pitcher_id = away_pitcher["id"]
+            home_pitcher_hand = _get_pitcher_hand(home_pitcher_id)
+            away_pitcher_hand = _get_pitcher_hand(away_pitcher_id)
+
+            if lineup_mode == "perfect":
+                home_top3 = mlb_api.get_starting_batting_order(game_pk, "home")[:3]
+                away_top3 = mlb_api.get_starting_batting_order(game_pk, "away")[:3]
+            else:
+                home_last_game = _find_last_completed_game(home_team_id, eval_date)
+                away_last_game = _find_last_completed_game(away_team_id, eval_date)
+                home_top3 = mlb_api.get_starting_batting_order(home_last_game, "home")[:3] if home_last_game else []
+                away_top3 = mlb_api.get_starting_batting_order(away_last_game, "away")[:3] if away_last_game else []
+
+            features = pipeline.build_game_features(
+                game_pk=game_pk, home_team_id=home_team_id, away_team_id=away_team_id,
+                home_pitcher_id=home_pitcher_id, away_pitcher_id=away_pitcher_id,
+                home_pitcher_hand=home_pitcher_hand, away_pitcher_hand=away_pitcher_hand,
+                home_top3_batter_ids=home_top3, away_top3_batter_ids=away_top3,
+                as_of_date=eval_date, is_historical=True,
+            )
+
+            if g.get("status", {}).get("abstractGameState") == "Final":
+                runs = mlb_api.get_first_inning_runs(game_pk)
+                features["nrfi_label"] = 1 if (runs["home"] == 0 and runs["away"] == 0) else 0
+
+            results.append(features)
+
+        except Exception as exc:
+            # One bad game (API hiccup, missing data, etc.) should not take
+            # down a multi-month backtest. Skip it, log it, keep going.
+            print(f"Skipping game on {eval_date} due to error: {exc}")
             continue
-
-        home_pitcher_id = home_pitcher["id"]
-        away_pitcher_id = away_pitcher["id"]
-        home_pitcher_hand = _get_pitcher_hand(home_pitcher_id)
-        away_pitcher_hand = _get_pitcher_hand(away_pitcher_id)
-
-        if lineup_mode == "perfect":
-            home_top3 = mlb_api.get_starting_batting_order(game_pk, "home")[:3]
-            away_top3 = mlb_api.get_starting_batting_order(game_pk, "away")[:3]
-        else:
-            home_last_game = _find_last_completed_game(home_team_id, eval_date)
-            away_last_game = _find_last_completed_game(away_team_id, eval_date)
-            home_top3 = mlb_api.get_starting_batting_order(home_last_game, "home")[:3] if home_last_game else []
-            away_top3 = mlb_api.get_starting_batting_order(away_last_game, "away")[:3] if away_last_game else []
-
-        features = pipeline.build_game_features(
-            game_pk=game_pk, home_team_id=home_team_id, away_team_id=away_team_id,
-            home_pitcher_id=home_pitcher_id, away_pitcher_id=away_pitcher_id,
-            home_pitcher_hand=home_pitcher_hand, away_pitcher_hand=away_pitcher_hand,
-            home_top3_batter_ids=home_top3, away_top3_batter_ids=away_top3,
-            as_of_date=eval_date, is_historical=True,
-        )
-
-        if g.get("status", {}).get("abstractGameState") == "Final":
-            runs = mlb_api.get_first_inning_runs(game_pk)
-            features["nrfi_label"] = 1 if (runs["home"] == 0 and runs["away"] == 0) else 0
-
-        results.append(features)
 
     return results
 

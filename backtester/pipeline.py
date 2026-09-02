@@ -51,13 +51,19 @@ def get_projected_lineup(team_id: int, last_completed_game_pk: int, home_or_away
 
 
 def get_weather_features(home_team_id: int, as_of_date: str, is_historical: bool, hour: int = 19) -> dict:
-    """is_historical=True uses the archive API (backtest-safe)."""
+    """is_historical=True uses the archive API (backtest-safe).
+    If the weather API fails after retries (timeouts do happen over a
+    5-month backtest), fall back to unknown weather for that one game
+    instead of crashing the whole run."""
     info = get_park_info(home_team_id)
 
     def _compute():
-        if is_historical:
-            return weather_api.get_weather_at_hour(info.lat, info.lon, as_of_date, hour)
-        return weather_api.get_current_weather(info.lat, info.lon)
+        try:
+            if is_historical:
+                return weather_api.get_weather_at_hour(info.lat, info.lon, as_of_date, hour)
+            return weather_api.get_current_weather(info.lat, info.lon)
+        except RuntimeError:
+            return {"temperature_f": None, "wind_speed_mph": None, "wind_direction_deg": None, "precipitation": None}
 
     key = f"{home_team_id}_{hour}_{'hist' if is_historical else 'live'}"
     weather = cache.get_or_compute("weather", key, as_of_date, _compute)
