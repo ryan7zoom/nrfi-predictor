@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import mlb_api  # noqa: E402
 import pipeline  # noqa: E402
 import cache  # noqa: E402
-from model import train_model, predict  # noqa: E402
+from model import train_model, predict, FEATURE_COLUMNS  # noqa: E402
 
 MAX_WORKERS = 10  # games processed concurrently per day; keeps network I/O
                    # from being fully sequential without hammering the API
@@ -174,12 +174,18 @@ def run_backtest(start_date: str, end_date: str, lineup_mode: str = "realistic",
         days_since_retrain += 1
 
         for feat, pred in zip(todays_features, preds):
-            all_predictions.append({
+            prediction_record = {
                 "game_pk": feat["game_pk"],
                 "date": eval_date,
                 "predicted_nrfi_prob": pred,
                 "actual_label": feat.get("nrfi_label"),
-            })
+            }
+            # Also save the raw feature values, not just the prediction,
+            # so a separate script (check_feature_correlations.py) can
+            # analyze which features actually carry signal after the run.
+            for col in FEATURE_COLUMNS:
+                prediction_record[col] = feat.get(col)
+            all_predictions.append(prediction_record)
 
         all_features.extend(todays_features)
 
